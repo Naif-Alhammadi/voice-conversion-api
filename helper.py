@@ -16,8 +16,7 @@ def login_required(f):
 
 
 class File:
-    def __init__(self, path):
-        self.path = path
+    def __init__(self):
         self.fileFormat = True
         self.fmt = ''
         self.iRIFF = ''
@@ -37,66 +36,62 @@ class File:
         self.samples = ''
 
 
-        self.file_open()
+    def file_open(self, file):
+        """"Read Wave Audio File"""
 
-    def file_open(self):
-        with open(self.path, 'rb') as file:
+        # read by 4 byte
+        chunkSize = 4
 
-            # read file if it contain RIFF and WAVE signature
+        # keep updatine file read cursor
+        while True:
 
-            # read by 4 byte
-            chunkSize = 4
+            # read file each time by the zie of the chunkSize
+            file_chunk = file.read(chunkSize)
 
-            while True:
+            # if first 4 byte is RIFF IMB stander format
+            if (file_chunk == b'RIFF'):
+                self.iRIFF = b'RIFF'
+                continue
 
-                file_chunk = file.read(chunkSize)
+            if (not self.chunk_size):
+                self.chunk_size = file_chunk
+                continue
 
-                # if first 4 byte is RIFF IMB stander format
-                if (file_chunk == b'RIFF'):
-                    self.iRIFF = b'RIFF'
-                    continue
+            # second 4 byte is WAVE standard .wav files
+            if(file_chunk == b'WAVE'):
+                self.iWAVE = b'WAVE'
+                continue
 
-                if (not self.chunk_size):
-                    self.chunk_size = file_chunk
-                    continue
+            if(file_chunk == b'fmt '):
+                self.fmt = file_chunk
+                chunk = chunkSize
+                self.subChunk1Size = file.read(chunk)
+                self.audioFormat = file.read(chunk - 2)
 
-                # second 4 byte is WAVE standard .wav files
-                if(file_chunk == b'WAVE'):
-                    self.iWAVE = b'WAVE'
-                    continue
+                stereo = file.read(chunk - 2)
+                if stereo == b'\x02\x00':
+                    self.numChannels = b'\x02\x00'
 
-                if(file_chunk == b'fmt '):
-                    self.fmt = b'fmt'
-                    chunk = chunkSize
-                    self.subChunk1Size = file.read(chunk)
-                    self.audioFormat = file.read(chunk - 2)
-                    if self.audioFormat == b'\x01\x00':
-                        self.audioFormat = b'PCM'
+                self.sampleRate = file.read(chunkSize)
+                continue
 
-                    stereo = file.read(chunk - 2)
-                    if stereo == b'\x02\x00':
-                        self.numChannels = 2
+            if (not self.byteRate):
+                self.byteRate = file_chunk
+                self.blockAlign = file.read(chunkSize - 2)
+                self.bitPerSample = file.read(chunkSize - 2)
+                continue
 
-                    self.sampleRate = file.read(chunkSize)
-                    continue
+            if (file_chunk == b'data'):
+                self.data = b'data'
+                continue
 
-                if (not self.byteRate):
-                    self.byteRate = file_chunk
-                    self.blockAlign = file.read(chunkSize - 2)
-                    self.bitPerSample = file.read(chunkSize - 2)
-                    continue
+            if (not self.subChunk2Size):
+                self.subChunk2Size = file_chunk
+                break
 
-                if (file_chunk == b'data'):
-                    self.data = b'data'
-                    continue
+            self.fileFormat = False
 
-                if (not self.subChunk2Size):
-                    self.subChunk2Size = file_chunk
-                    break
-
-                self.fileFormat = False
-
-            self.samples = file.read()
+        self.samples = file.read()
 
 
     # convert attributes from hex to decimal
@@ -108,6 +103,7 @@ class File:
         self.bitPerSample = self.hexToDecimal(self.bitPerSample)
         self.sampleRate = self.hexToDecimal(self.sampleRate)
         self.chunk_size = self.hexToDecimal(self.chunk_size)
+        self.numChannels = self.hexToDecimal(self.numChannels)
 
 
 
@@ -177,8 +173,34 @@ class File:
                 return num
 
 
+
+    def file_save(self, file):
+        """"Save Wave Audio File"""
+        file.write(self.iRIFF)
+        file.write(self.chunk_size)
+        file.write(self.iWAVE)
+        file.write(self.fmt)
+        file.write(self.subChunk1Size)
+        file.write(self.audioFormat)
+        file.write(self.numChannels)
+        file.write(self.sampleRate)
+        file.write(self.byteRate)
+        file.write(self.blockAlign)
+        file.write(self.bitPerSample)
+        file.write(self.data)
+        file.write(self.subChunk2Size)
+        file.write(self.samples)
+
+
 if __name__ == "__main__":
-    f = File("uploads/audios/lack in.wav")
-    print(f)
-    f.toDecimal()
-    print(f)
+    path = "uploads/audios/lack in.wav"
+    iWave = File()
+    with open(path, 'rb') as file:
+        iWave.file_open(file)
+
+    print(iWave)
+    # iWave.toDecimal()
+
+    os.makedirs("uploads/edited_audios", exist_ok=True)
+    with open("uploads/edited_audios/man2.wav", "wb") as file:
+        iWave.file_save(file)
