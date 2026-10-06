@@ -16,6 +16,9 @@ def login_required(f):
 
 
 class File:
+
+    HALF_BYTE = 4
+
     def __init__(self):
         self.fileFormat = True
         self.fmt = ''
@@ -40,7 +43,7 @@ class File:
         """"Read Wave Audio File"""
 
         # read by 4 byte
-        chunkSize = 4
+        chunkSize = File.HALF_BYTE
 
         # keep updatine file read cursor
         while True:
@@ -96,14 +99,30 @@ class File:
 
     # convert attributes from hex to decimal
     def toDecimal(self):
-        self.subChunk1Size = self.hexToDecimal(self.subChunk1Size)
-        self.subChunk2Size = self.hexToDecimal(self.subChunk2Size)
-        self.byteRate = self.hexToDecimal(self.byteRate)
-        self.blockAlign = self.hexToDecimal(self.blockAlign)
-        self.bitPerSample = self.hexToDecimal(self.bitPerSample)
-        self.sampleRate = self.hexToDecimal(self.sampleRate)
-        self.chunk_size = self.hexToDecimal(self.chunk_size)
-        self.numChannels = self.hexToDecimal(self.numChannels)
+        self.subChunk1Size = self.hexToDecimalFormat(self.subChunk1Size)
+        self.subChunk2Size = self.hexToDecimalFormat(self.subChunk2Size)
+        self.byteRate = self.hexToDecimalFormat(self.byteRate)
+        self.blockAlign = self.hexToDecimalFormat(self.blockAlign)
+        self.bitPerSample = self.hexToDecimalFormat(self.bitPerSample)
+        self.sampleRate = self.hexToDecimalFormat(self.sampleRate)
+        self.chunk_size = self.hexToDecimalFormat(self.chunk_size)
+        self.numChannels = self.hexToDecimalFormat(self.numChannels)
+        self.audioFormat = self.hexToDecimalFormat(self.audioFormat)
+
+
+    # convert attributes from hex to decimal
+    def toOrginalHex(self):
+
+        # know to_byte method from ChatGPT
+        self.subChunk1Size = self.subChunk1Size.to_bytes(File.HALF_BYTE, "little")
+        self.subChunk2Size = self.subChunk2Size.to_bytes(File.HALF_BYTE, "little")
+        self.byteRate = self.byteRate.to_bytes(File.HALF_BYTE, "little")
+        self.blockAlign = self.blockAlign.to_bytes(File.HALF_BYTE // 2, "little")
+        self.bitPerSample = self.bitPerSample.to_bytes(File.HALF_BYTE // 2, "little")
+        self.sampleRate = self.sampleRate.to_bytes(File.HALF_BYTE, "little")
+        self.chunk_size = self.chunk_size.to_bytes(File.HALF_BYTE, "little")
+        self.numChannels = self.numChannels.to_bytes(File.HALF_BYTE // 2, "little")
+        self.audioFormat = self.audioFormat.to_bytes(File.HALF_BYTE // 2, "little")
 
 
 
@@ -112,8 +131,10 @@ class File:
         return f"RIFF = {self.iRIFF}, ChunkSize = {self.chunk_size}, FMT = {self.fmt}, Subchunk1Size = {self.subChunk1Size}, AudioFormat = {self.audioFormat}, NumChannels = {self.numChannels}, sampleRate = {self.sampleRate}, byteRate = {self.byteRate}, blockAlign = {self.blockAlign}, bitPerSample = {self.bitPerSample}, data = {self.data}, subchunk2Size = {self.subChunk2Size}"
 
 
-    def hexToDecimal(self, hexa):
-        """"Take hexdecimal values and convert (return) them to decimal values"""
+    def hexToDecimalFormat(self, hexa):
+        """"Take decimal (binary hexdecimals) values and format (return) them in reverse values"""
+
+
         # hexdecimal base
         hex = 16
 
@@ -145,9 +166,10 @@ class File:
             # append hex value in one string
             hexValue = hexValue + str(num)
 
-        # return the value in base 16th
+        # return the value in reverse with base 10th
         return int(hexValue, hex)
 
+    
     def hexLetters(self, num):
         """""Convert the number to its appropriate hexdecimal value"""
         match num:
@@ -199,7 +221,11 @@ if __name__ == "__main__":
         iWave.file_open(file)
 
     print(iWave)
-    # iWave.toDecimal()
+    iWave.toDecimal()
+    iWave.sampleRate += 15000
+    iWave.toOrginalHex()
+    print(iWave)
+
 
     os.makedirs("uploads/edited_audios", exist_ok=True)
     with open("uploads/edited_audios/man2.wav", "wb") as file:
