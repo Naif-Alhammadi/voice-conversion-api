@@ -167,6 +167,8 @@ class File:
             hexValue = hexValue + str(num)
 
         # return the value in reverse with base 10th
+        if hexValue == "":
+            hexValue = '0'
         return int(hexValue, hex)
 
     
@@ -214,17 +216,102 @@ class File:
         file.write(self.samples)
 
 
+# take a chunk of samples and return its lags
+def autocorrelation(lSamples):
+    # heighest value
+    peak = 0
+
+    lag = 0
+
+    # copy one of samples's direction (left)
+    ns = lSamples[:]
+
+    # keep track of all lag values
+    lags = []
+
+    # counting the first peak value
+    for n in ns:
+        peak += n * (n - 1)
+
+    # skip the first (peak) value and keep track of the while loop
+    l = 1
+
+
+    while True:
+
+        # displacement process
+        ns.pop()
+        ns.insert(0, 0)
+        nSos = ns
+
+
+        # calculate each lag of each displacement 
+        # learn the zip function from chatGPT
+        for (n, nSo) in zip(lSamples, nSos):
+            lag += n * nSo
+
+
+        # terminate the while loop
+        if l == len(ns):
+            break
+
+        # gather lag values
+        lags.append(lag)
+
+        # update while lenght
+        l = l + 1
+
+        # reset current lag value after appending to the lags list
+        lag = 0
+
+    return lags
+
+
+# takes lag values and return the biggest value and its position
+def biggest_lag(lags):
+    biggest = lags[0]
+    fk = 0
+    
+    for (k, lag) in enumerate(lags):
+        if lag > biggest:
+            biggest = lag
+            fk = k
+
+    fk += 1
+    return biggest, fk
+
+
 if __name__ == "__main__":
-    path = "uploads/audios/lack in.wav"
+    path = "uploads/audios/helpng.wav"
     iWave = File()
     with open(path, 'rb') as file:
         iWave.file_open(file)
+        leftSample = list()
+        start = 0
+        inc = 2
+        
+        while True:
 
-    print(iWave)
-    iWave.toDecimal()
-    iWave.sampleRate += 15000
-    iWave.toOrginalHex()
-    print(iWave)
+            lSample = iWave.hexToDecimalFormat(iWave.samples[start:inc])
+            leftSample.append(lSample)
+            if inc == 2048:
+                break
+
+            inc += 2
+            start += 2
+            
+        lag, k = biggest_lag(autocorrelation(leftSample))
+        F0 = lag // k
+        print(F0)
+
+
+    # print(iWave)
+    # iWave.toDecimal()
+    # iWave.sampleRate += 15000
+    # print(iWave)
+    # iWave.toOrginalHex()
+    # print(iWave)
+
 
 
     os.makedirs("uploads/edited_audios", exist_ok=True)
