@@ -2,6 +2,7 @@ import os
 from flask import redirect, session
 from functools import wraps
 import math
+import numpy as np
 
 
 def login_required(f):
@@ -531,64 +532,183 @@ def m_dash(marks, p_dash, k_lag):
     return ms_dash
         
 
-if __name__ == "__main__":
-    path = "uploads/audios/helpng.wav"
+# get some help from ChatGpt
+def process_frame(samples, sample_rate):
+    """Apply the project's existing grain-based pitch processing to one frame."""
+    original = np.asarray(samples, dtype=np.float64)
+    frame_size = len(original)
+    if frame_size < 16:
+        return np.rint(original).astype(np.int16)
+
+    frame = np.rint(original).astype(np.int64).tolist()
+
+    try:
+        lags, peak = autocorrelation(frame)
+        _, period = biggest_lag(lags, sample_rate)
+    except (IndexError, ZeroDivisionError, ValueError):
+        return np.clip(np.rint(original), -32768, 32767).astype(np.int16)
+
+    if period < 2 or period >= frame_size:
+        return np.clip(np.rint(original), -32768, 32767).astype(np.int16)
+
+    P = period
+    N = 2 * P
+    marks_list = marks(frame, P)
+    if not marks_list:
+        return np.clip(np.rint(original), -32768, 32767).astype(np.int16)
+
+    p_dash = target_p_dash(P)
+    if p_dash < 1:
+        return np.clip(np.rint(original), -32768, 32767).astype(np.int16)
+    new_marks = m_dash(marks_list, p_dash, P)
+
+    padded = np.pad(original, (N, N), mode='constant')
+    output = np.zeros_like(padded, dtype=np.float64)
+    weights = np.zeros_like(padded, dtype=np.float64)
+
+    for old_pos, new_pos in zip(marks_list, new_marks):
+        if old_pos < 0 or old_pos >= frame_size or new_pos < 0:
+            continue
+
+        source_start = N + old_pos
+        grain = padded[source_start:source_start + N]
+        if len(grain) < 2:
+            continue
+
+        window = np.hanning(len(grain))
+        windowed = grain * window
+        target_start = N + new_pos
+        if target_start >= len(output):
+            continue
+
+        count = min(len(windowed), len(output) - target_start)
+        output[target_start:target_start + count] += windowed[:count]
+        weights[target_start:target_start + count] += window[:count]
+
+    valid = weights > 1e-8
+    output[valid] /= weights[valid]
+    result = output[N:N + frame_size]
+
+    # If the grain algorithm produced no usable output, preserve the original frame.
+    if not np.any(np.abs(result) > 1e-8):
+        result = original
+
+    return np.clip(np.rint(result), -32768, 32767).astype(np.int16)
+
+
+
+# get some help from ChatGpt
+def robot(path):
+    output_path = "static/uploads/edited_audios/edited_robot.wav"
+
     iWave = File()
-    with open(path, 'rb') as file:
+    with open(path, "rb") as file:
         iWave.file_open(file)
-        leftSample = list()
-        start = 0
-        inc = 2
 
-        iWave.toDecimal()
-        
-        while True:
-            lSample = iWave.hexToDecimalFormat(iWave.samples[start:inc])
-            if lSample >= 2 ** 15:
-                lSample -= 2 ** 16
-            leftSample.append(lSample)
-            if inc == 4096 - 2:
-                break
+    iWave.toDecimal()
 
-            inc += 4
-            start += 4
-        
-        # ------------------ audio process -----------------
+    # The sample decoder below intentionally supports signed 16-bit PCM only.
+    if iWave.audioFormat != 1:
+        raise ValueError("Unsupported WAV format: only PCM audio is supported")
+    if iWave.bitPerSample != 16:
+        raise ValueError("Unsupported WAV format: only 16-bit PCM is supported")
+    if iWave.numChannels < 1:
+        raise ValueError("Invalid WAV file: channel count must be at least 1")
 
-        lags, peak = autocorrelation(leftSample)
+    channels = iWave.numChannels
+    audio_samples = np.frombuffer(iWave.samples, dtype="<i2").copy()
+    if audio_samples.size % channels != 0:
+        raise ValueError("Invalid WAV data: sample count does not match channel count")
 
-        lag, k = biggest_lag(lags, iWave.sampleRate)
-        f0 = iWave.sampleRate // k
-        print(k, "k")
-        print(f0, "F0")
+    # Reshape to [audio frame, channel] so stereo samples remain interleaved correctly.
+    audio_frames = audio_samples.reshape(-1, channels)
+    left_samples = audio_frames[:, 0].astype(np.int64)
 
-        even, odd = dft(leftSample)
-        real , imaginary, j_indexs = real_imaginary(len(leftSample), even, odd)
-        magnis = magnitude(real, imaginary, j_indexs)
-        s = spectral_smoothing(magnis)
-        index1 = peak_index(s) 
-        index2 = peak_index(s)
-        index3 = peak_index(s)
-        f1 = index1 * (iWave.sampleRate // 1024)
-        f2 = index2 * (iWave.sampleRate // 1024)
-        f3 = index3 * (iWave.sampleRate // 1024)
-        print(f1, "f1")
-        print(f2, "f2")
-        print(f3, "f3")
-        print("======================")
+    print("Sample rate:", iWave.sampleRate)
+    print("Channels:", channels)
+    print("Total samples in left channel:", len(left_samples))
 
-        P = k
-        N = 2 * P
-        
-        Marks = marks(leftSample, P)
-        p_dash = target_p_dash(P)
-        ms_dash = m_dash(Marks, p_dash, P)
+    # Process the entire file in 1024-sample frames, including the final partial frame.
+    FRAME_SIZE = 1024
+    processed_samples = left_samples.copy()
 
+    for start in range(0, len(left_samples), FRAME_SIZE):
+        chunk = left_samples[start:start + FRAME_SIZE]
+        original_length = len(chunk)
 
+        if original_length < FRAME_SIZE:
+            chunk_for_processing = np.pad(
+                chunk,
+                (0, FRAME_SIZE - original_length),
+                mode="constant"
+            )
+        else:
+            chunk_for_processing = chunk
 
+        processed = process_frame(chunk_for_processing, iWave.sampleRate)
+        processed_samples[start:start + original_length] = processed[:original_length]
+
+    # Replace only the left channel; preserve the right channel in stereo files.
+    audio_frames[:, 0] = np.clip(
+        processed_samples, -32768, 32767
+    ).astype(np.int16)
+    iWave.samples = audio_frames.astype("<i2", copy=False).tobytes()
+
+    # Update WAV sizes because the writer creates a standard 44-byte PCM header.
+    iWave.subChunk1Size = 16
+    iWave.subChunk2Size = len(iWave.samples)
+    iWave.chunk_size = 36 + len(iWave.samples)
+    iWave.byteRate = iWave.sampleRate * iWave.blockAlign
 
     iWave.toOrginalHex()
 
-    os.makedirs("uploads/edited_audios", exist_ok=True)
-    with open("uploads/edited_audios/man2.wav", "wb") as file:
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "wb") as file:
         iWave.file_save(file)
+
+
+# slow down the audio (deeper voice)
+def slow_down(value, path):
+    output_path = "static/uploads/edited_audios/edited_slow_down.wav"
+
+    iWave = File()
+    with open(path, "rb") as file:
+        iWave.file_open(file)
+
+    iWave.toDecimal()
+    iWave.sampleRate -= value
+
+    iWave.toOrginalHex()
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "wb") as file:
+        iWave.file_save(file)
+
+
+# speed up the audio (litter voice)
+def speed_up(value, path):
+    output_path = "static/uploads/edited_audios/edited_speed_up.wav"
+
+    iWave = File()
+    with open(path, "rb") as file:
+        iWave.file_open(file)
+
+    iWave.toDecimal()
+    iWave.sampleRate += value
+
+    iWave.toOrginalHex()
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "wb") as file:
+        iWave.file_save(file)
+
+    
+
+if __name__ == "__main__":
+    path = "static/uploads/audios/helpng.wav"
+    output_path = "static/uploads/edited_audios/edited.wav"
+
+    # robot(path)
+    # speed_up(22100, path)
+
+    slow_down(22100, path)
+
+    # print("Saved processed audio to:", output_path)
