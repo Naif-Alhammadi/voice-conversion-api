@@ -8,6 +8,9 @@ from flask import Flask, render_template,request, redirect, session, jsonify
 from helper import login_required
 
 from flask_session import Session
+from helper import robot
+from helper import slow_down
+from helper import speed_up
 
 # load the weather API key
 load_dotenv()
@@ -54,6 +57,27 @@ def homepage():
 def process():
     file = request.files["file"]
     convert = request.form.get("convertTo")
-    os.makedirs("uploads/audios", exist_ok=True)
-    file.save(os.path.join("uploads", "audios", file.filename))
-    return jsonify("process success")
+    value = request.form.get("value")
+
+    if not value:
+        value = "0"
+
+    if not value.isdigit():
+        return jsonify("process_failed")
+    
+
+    os.makedirs("static/uploads/audios", exist_ok=True)
+    path = os.path.join("static", "uploads", "audios", file.filename)
+    outter_path = os.path.join("static", "uploads", "edited_audios", f"edited_{convert}_{value}.wav")
+    file.save(path)
+    if convert == "speed_up":
+        s = speed_up(int(value), path, outter_path)
+
+
+    elif convert == "slow_down":
+        slow_down(int(value), path, outter_path)
+
+    elif convert == "rotter_pbot":
+        robot(path, outter_path)
+        
+    return jsonify({"process_success": outter_path})

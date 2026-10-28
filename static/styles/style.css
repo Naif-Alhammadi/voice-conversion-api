@@ -87,7 +87,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url("./images/my-animated-eyes.png");
+    background-image: url("../images/my-animated-eyes.png");
 }
 
 .name-settings {
@@ -327,6 +327,20 @@ audio {
 #consersion-p {
     margin-top: var(--static-px);
     color: red;
+}
+
+
+#innumber {
+    width: 100px;
+    height: 30px;
+    border-radius: 20px;
+    border: 2px solid black;
+    margin: 10px 0px 5px 0px;
+}
+
+#innumber::placeholder {
+    font-family: 'Courier New', Courier, monospace;
+    padding: 20px;
 }
 
 .audio-display {

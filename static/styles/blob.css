@@ -1,0 +1,20 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+#svg-blob {
+    stroke: cyan;
+    fill: black;
+    stroke-width: 5;
+    filter: drop-shadow(0 0 10px cyan);
+}

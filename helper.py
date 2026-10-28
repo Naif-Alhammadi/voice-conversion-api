@@ -598,9 +598,7 @@ def process_frame(samples, sample_rate):
 
 
 # get some help from ChatGpt
-def robot(path):
-    output_path = "static/uploads/edited_audios/edited_robot.wav"
-
+def robot(path, output_path):
     iWave = File()
     with open(path, "rb") as file:
         iWave.file_open(file)
@@ -668,9 +666,7 @@ def robot(path):
 
 
 # slow down the audio (deeper voice)
-def slow_down(value, path):
-    output_path = "static/uploads/edited_audios/edited_slow_down.wav"
-
+def slow_down(value, path, output_path):
     iWave = File()
     with open(path, "rb") as file:
         iWave.file_open(file)
@@ -685,9 +681,7 @@ def slow_down(value, path):
 
 
 # speed up the audio (litter voice)
-def speed_up(value, path):
-    output_path = "static/uploads/edited_audios/edited_speed_up.wav"
-
+def speed_up(value, path, output_path):
     iWave = File()
     with open(path, "rb") as file:
         iWave.file_open(file)
@@ -709,6 +703,6 @@ if __name__ == "__main__":
     # robot(path)
     # speed_up(22100, path)
 
-    slow_down(22100, path)
+    slow_down(22100, path, output_path)
 
     # print("Saved processed audio to:", output_path)

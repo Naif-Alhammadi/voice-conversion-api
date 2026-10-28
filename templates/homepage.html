@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice Conversion</title>
     <link rel="stylesheet" href="../static/styles/style.css">
-
+    <link rel="stylesheet" href="../static/styles/blob.css">
     <link rel="icon" href="../static/images/mic.png">
 
 </head>
@@ -115,20 +115,31 @@
 
     <div class="file-preview">
         <h2 class="file-preview-heading"><i id="preview-icon"></i>file preview</h2>
-        <audio src="" controls id="file-preview"></audio>
+
+        <!-- learn svg from university lecture -->
+        <svg width="200" height="200" id= "svg-blob">
+        <path id="blob"
+            d="M 100, 20
+            C 150, 10 190, 50 180, 100
+            C 200, 150 150, 190 100, 180
+            C 50, 200 10, 150 20, 100
+            C 0, 50 50, 10 100, 20 Z
+            ">
+    </svg>
+        <audio src="" controls id="file-preview-audio"></audio>
     </div>
 
 
 
     <div class="audio-conversion">
         <h3 id="audio-conversion-heading">converite to</h3>
+        <input id="innumber" placeholder="value" type="number">
         <ul id="lists-of-conversion">
-            <li class="conversion-list"><i id="consersion-list-icon"></i>man</li>
-            <li class="conversion-list"><i id="consersion-list-icon"></i>women</li>
-            <li class="conversion-list"><i id="consersion-list-icon"></i>animal</li>
-            <li class="conversion-list"><i id="consersion-list-icon"></i>robot</li>
+            <li class="conversion-list"><i id="conversion-list-icon"></i>speed_up</li>
+            <li class="conversion-list"><i id="conversion-list-icon"></i>slow_down</li>
+            <li class="conversion-list"><i id="conversion-list-icon"></i>robot</li>
         </ul>
-        <p id="consersion-p"></p>
+        <p id="conversion-p"></p>
         
     </div>
 
@@ -148,11 +159,11 @@
      <!-- audio viewer: -->
      <script src="../static/scripts/script.js"></script>
 
-     <!-- turn it off to wrok offline -->
-     <!-- <script src="https://unpkg.com/wavesurfer.js@7"></script>  -->
-      <script src="../static/scripts/wavesurfer.js"></script>
+     <!-- wavesurfer's audio viewer -->
+     <script src="https://unpkg.com/wavesurfer.js@7"></script> 
 
      <script src="../static/scripts/conversion.js"></script>
+     <script src="../static/scripts/blob.js"></script>
 
     <!-- fontawesome -->
     <script src="https://kit.fontawesome.com/ef84b809a9.js" crossorigin="anonymous"></script>

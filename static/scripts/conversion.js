@@ -1,32 +1,46 @@
+'use strict'
+
 // file 
 const inputFile = document.querySelector("#input-file");
 const fileName = document.querySelector("#file-name");
 let dragDrop = document.querySelector(".drag-drop-container");
 
+// lists that can be done for the audio
 const conversionList = document.querySelectorAll(".conversion-list");
 let convertTo = "";
 let userFile;
-const listParagraph =document.querySelector("#consersion-p");
 
+// display if the file is being selected or not
+const listParagraph = document.querySelector("#conversion-p");
+
+// listen for each valid audio conversion
 conversionList.forEach(list => {
     list.addEventListener("click", function(e){
         convertTo = e.target.textContent;
-
+        
         // if user choose a file
         if (userFile)
         {
+            value = document.querySelector("#innumber").value;
             listParagraph.innerHTML = "";
 
             // process the voice according to the user's chosen list
             const formData = new FormData();
             formData.append("file" , userFile);
             formData.append("convertTo", convertTo);
+            formData.append("value", value);
+
 
             fetch("/process",{
                 method: "POST",
                 body: formData
             }).then(response => response.json()).then(data => {
-                console.log(data)
+
+                // display the converted audio in the file preview section
+                document.querySelector('#file-preview-audio').src = "";
+                document.querySelector('#file-preview-audio').src = data["process_success"];
+
+
             }).catch(error => console.log(error));
         }
 
@@ -38,6 +52,8 @@ conversionList.forEach(list => {
     });
 });
 
+
+// display the previous audio in wavesufer format
 const wavesurfer = WaveSurfer.create({
     container: '#waveform', // connect the wave with the dev
     waveColor: '#1e0af8',   // the primary color
@@ -55,7 +71,6 @@ document.querySelector('#playButton').addEventListener('click', () => {
 
 
 // drag drop file
-
 const checkFileExtention = function(fileName)
 {
     if(fileName.name.slice(-4) !== '.wav')
@@ -66,23 +81,22 @@ const checkFileExtention = function(fileName)
 
 dragDrop.addEventListener('dragover', function(e)
 {
-    e.preventDefault()
+    e.preventDefault();
 });
 
 dragDrop.addEventListener('drop', function(e)
 {
     e.preventDefault();
-    const fileSrc = document.querySelector('#file-preview');
+    const fileSrc = document.querySelector('#file-preview-audio');
     const file = e.dataTransfer.files[0];
     const dropMessage = document.querySelector("#drag-drop-message");
     if(checkFileExtention(file))
     {
-
-        fileSrc.src = URL.createObjectURL(e.dataTransfer.files[0]);
-        wavesurfer.load(URL.createObjectURL(e.dataTransfer.files[0]));
+        fileSrc.src = URL.createObjectURL(file);
         fileName.innerHTML = file.name;
         dropMessage.innerHTML = "";
-        userFile = e.dataTransfer.file[0];
+        userFile = file;
+        wavesurfer.load(URL.createObjectURL(file));
     }
 
     else {
@@ -91,9 +105,10 @@ dragDrop.addEventListener('drop', function(e)
 });
 
 
+// input file manually
 inputFile.addEventListener("change", function(){
     const file = inputFile.files[0];
-    const fileSrc = document.querySelector('#file-preview');
+    const fileSrc = document.querySelector('#file-preview-audio');
     const dropMessage = document.querySelector("#drag-drop-message");
 
     if(checkFileExtention(file))
