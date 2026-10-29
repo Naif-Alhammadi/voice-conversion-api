@@ -24,7 +24,12 @@ Session(app)
 @app.route("/")
 def index():
     if session.get("user_id") is not None:
-        return render_template("homepage.html")
+        return render_template("conversion.html")
+    return render_template("index.html")
+
+
+@app.route("/mainpage")
+def mainpage():
     return render_template("index.html")
 
 @app.route("/weather")
@@ -41,15 +46,15 @@ def login():
         session["user_id"] = 1
         return jsonify({
             "redirect": "True",
-            "location": "/homepage"
+            "location": "/conversion"
         })
 
-    return render_template("index.html")
+    return render_template("login.html")
 
-@app.route("/homepage", methods=["GET", "POST"])
+@app.route("/conversion", methods=["GET", "POST"])
 @login_required
 def homepage():
-    return render_template("homepage.html")
+    return render_template("conversion.html")
 
 
 @app.route("/process", methods=["GET", "POST"])

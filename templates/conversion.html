@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice Conversion</title>
-    <link rel="stylesheet" href="../static/styles/style.css">
+    <link rel="stylesheet" href="../static/styles/conversoin.css">
     <link rel="stylesheet" href="../static/styles/blob.css">
     <link rel="icon" href="../static/images/mic.png">
 
@@ -18,15 +18,15 @@
         </div>
         <ul>
             <h1 id="nav-heading">naif</h1>
-            <a class="list-link" href="">
+            <a class="list-link" href="/index">
                 <li class="list-item-res"> <i class="list-icon fa-solid fa-house-chimney"></i> home</li>
                 
             </a><a class="list-link" href="">
                 <li class="list-item-res"><i class="list-icon fa-solid fa-circle-user"></i> profile</li>
             </a><a class="list-link" href="">
                 <li class="list-item-res"><i class="list-icon">&</i> hisroty</li>
-            </a><a class="list-link" href="">
-                <li class="list-item-res"><i class="list-icon">&</i> about</li>
+            </a><a class="list-link" href="/mainpage">
+                <li class="list-item-res"><i class="list-icon">&</i> mainpage</li>
             </a>
                 <a href="" class="list-link"><li class="list-item-res"><i class="icon-setting fa-solid fa-gear" setting></i>Settings</li></a>
         </ul>
@@ -41,15 +41,15 @@
         <h1 id="nav-heading"><i class="fa-solid fa-circle-user"></i>naif</h1>
     
         <ul>
-            <a class="list-link" href="">
+            <a class="list-link" href="/">
                 <li class="list-item"> <i class="list-icon fa-solid fa-house-chimney"></i> home</li>
                 
             </a><a class="list-link" href="">
                 <li class="list-item"><i class="list-icon fa-solid fa-circle-user"></i> profile</li>
             </a><a class="list-link" href="">
                 <li class="list-item"><i class="list-icon">&</i> hisroty</li>
-            </a><a class="list-link" href="">
-                <li class="list-item"><i class="list-icon">&</i> about</li>
+            </a><a class="list-link" href="/mainpage">
+                <li class="list-item"><i class="list-icon">&</i> mainpage</li>
             </a>
         </ul>
 
@@ -61,7 +61,7 @@
 
             <p id="user-name">Naif</p>
             <!-- <img src="/static/images/Screenshot from 2026-05-01 17-23-02.png" alt="user-profile" class="user-profile"> -->
-            <a href="" id="setting-link"><i class="icon-setting fa-solid fa-gear" setting></i>Settings</a>
+            <a href="" id="setting-link"><i class="icon-setting fa-solid fa-gear"></i>Settings</a>
         </div>
         </nav>
 </div>
@@ -124,7 +124,8 @@
             C 200, 150 150, 190 100, 180
             C 50, 200 10, 150 20, 100
             C 0, 50 50, 10 100, 20 Z
-            ">
+            "
+            fill="none">
     </svg>
         <audio src="" controls id="file-preview-audio"></audio>
     </div>
@@ -163,6 +164,8 @@
      <script src="https://unpkg.com/wavesurfer.js@7"></script> 
 
      <script src="../static/scripts/conversion.js"></script>
+
+     <script src="../static/scripts/lightDark.js"></script>
      <script src="../static/scripts/blob.js"></script>
 
     <!-- fontawesome -->
