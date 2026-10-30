@@ -68,3 +68,7 @@ i {
     background-color: var(--secondary);
     color: white;
 }
+
+.error-text {
+    color: red;
+}

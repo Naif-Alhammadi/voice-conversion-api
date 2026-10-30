@@ -17,7 +17,7 @@
         <div class="profile-container-res">
         </div>
         <ul>
-            <h1 id="nav-heading">naif</h1>
+            <h1 id="nav-heading">{{user_name}}</h1>
             <a class="list-link" href="/index">
                 <li class="list-item-res"> <i class="list-icon fa-solid fa-house-chimney"></i> home</li>
                 
@@ -56,11 +56,12 @@
         <div class="profile-container">
             <div class="profile"></div>
         </div>
-
+            <input id="add-pic-input" type="file">
+            <label for="add-pic-input" id="add-pic-lable">Profile Picture</label>
+        
         <div class="name-settings">
-
-            <p id="user-name">Naif</p>
-            <!-- <img src="/static/images/Screenshot from 2026-05-01 17-23-02.png" alt="user-profile" class="user-profile"> -->
+            
+            <p id="user-name">{{user_name}}</p>
             <a href="" id="setting-link"><i class="icon-setting fa-solid fa-gear"></i>Settings</a>
         </div>
         </nav>
@@ -164,6 +165,8 @@
      <script src="https://unpkg.com/wavesurfer.js@7"></script> 
 
      <script src="../static/scripts/conversion.js"></script>
+
+     <script src="../static/scripts/profilePicture.js"></script>
 
      <script src="../static/scripts/lightDark.js"></script>
      <script src="../static/scripts/blob.js"></script>

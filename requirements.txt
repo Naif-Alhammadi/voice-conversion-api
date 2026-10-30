@@ -2,3 +2,4 @@ Flask
 Flask_Session
 dotenv
 numpy
+psycopg2-binary

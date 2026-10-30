@@ -58,4 +58,3 @@
 //     document.documentElement.style.setPropertye("--text", "#FFF");
 // }
 
-

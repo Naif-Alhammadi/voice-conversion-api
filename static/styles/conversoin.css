@@ -91,7 +91,23 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url("../images/my-animated-eyes.png");
+}
+
+
+ #add-pic-input {
+    display: none;
+}
+
+#add-pic-lable {
+    color: var(--text);
+    cursor: pointer;
+    font-family: sans-serif;
+    transition: all 0.3s;
+}
+
+#add-pic-lable:hover {
+    color: var(--third);
+    font-size: 15px;
 }
 
 .name-settings {
@@ -157,7 +173,7 @@ i {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url("./images/my-animated-eyes.png");
+    background-image: url("../images/dark-background.jpg");
     margin-right: 20px;
 }
 
