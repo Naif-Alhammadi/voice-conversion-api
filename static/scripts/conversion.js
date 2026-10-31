@@ -20,10 +20,10 @@ conversionList.forEach(list => {
         
         // if user choose a file
         if (userFile)
-        {
-            value = document.querySelector("#innumber").value;
-            listParagraph.innerHTML = "";
-
+            {
+                let value = document.querySelector("#innumber").value;
+                listParagraph.innerHTML = "";
+                  
             // process the voice according to the user's chosen list
             const formData = new FormData();
             formData.append("file" , userFile);
@@ -67,6 +67,21 @@ const wavesurfer = WaveSurfer.create({
 // on off button
 document.querySelector('#playButton').addEventListener('click', () => {
     wavesurfer.playPause();
+});
+
+
+// url that apperes in the management section
+const urlFromTransaction = document.querySelectorAll(".url-from-transaction");
+
+
+// foreach transaction
+urlFromTransaction.forEach(url => {
+    url.addEventListener("click", function()
+    {
+        // display the converted audio in the file preview section
+        document.querySelector('#file-preview-audio').src = "";
+        document.querySelector('#file-preview-audio').src = `../static/uploads/edited_audios/${url.textContent}`;
+    });
 });
 
 

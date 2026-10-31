@@ -95,13 +95,50 @@
                     <li class="specific-list-choice"><i></i>month</li>
                     <li class="specific-list-choice"><i></i>year</li>
 
-                    <!-- records -->
-
-
+                    
+                    
                 </ul>
             </div>
-
+            
         </div>
+        <!-- records -->
+         <div class="records">
+        <table class="table">
+            <thead>
+                <th>
+                    Transaction
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    URL
+                </th>
+                <th>
+                    Date
+                </th>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>
+                        {{transaction["transaction_description"]}}
+                    </td>
+                    <td>
+                        {{transaction["transaction_url"]}}
+                    </td>
+                    <td>
+                        <button type="button" class="url-from-transaction">{{transaction["transaction_url"]}}</button>
+                    </td>
+                    <td>
+                        {{transaction["transaction_date"]}}
+                    </td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        </div>
+
     </div>
 
 
@@ -165,7 +202,8 @@
      <script src="../static/scripts/script.js"></script>
 
      <!-- wavesurfer's audio viewer -->
-     <script src="https://unpkg.com/wavesurfer.js@7"></script> 
+     <!-- <script src="https://unpkg.com/wavesurfer.js@7"></script>  -->
+      <script src="../static/scripts/wavesurfer.js"></script>
 
      <script src="../static/scripts/conversion.js"></script>
 

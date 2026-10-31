@@ -10,6 +10,7 @@ from helper import speed_up
 
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -279,15 +280,28 @@ def homepage():
     user_name = cur.fetchone()
 
 
+    cur.execute("SELECT * FROM transactions WHERE user_id = %s", (session["user_id"],))
+    transactions_query = cur.fetchall()
+    transactions = list()
+    for transaction in transactions_query:
+        transactions.append(transaction)
+
+
     connection.close()
     cur.close()
 
-    return render_template("conversion.html", user_name=user_name["user_name"])
+    return render_template("conversion.html", user_name=user_name["user_name"], transactions=transactions)
 
 
 @app.route("/process", methods=["GET", "POST"])
 @login_required
 def process():
+    connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
+    cur = connection.cursor(cursor_factory=RealDictCursor)
+
+    
+
+
     file = request.files["file"]
     convert = request.form.get("convertTo")
     value = request.form.get("value")
@@ -312,5 +326,11 @@ def process():
 
     elif convert == "rotter_pbot":
         robot(path, outter_path)
+
+    cur.execute("INSERT INTO transactions(transaction_url, transaction_description, transaction_date, user_id) VALUES(%s, %s, %s, %s)", (f"edited_{convert}_{value}.wav", convert, datetime.now(), str(session["user_id"])))
+    
+    connection.commit()
+    connection.close()
+    cur.close()
         
     return jsonify({"process_success": outter_path})

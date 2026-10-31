@@ -260,6 +260,18 @@ audio {
     border: solid 2px var(--secondary);
 }
 
+
+tbody {
+    color: var(--secondary);
+}
+
+
+.url-from-transaction {
+    cursor: pointer;
+    border: transparent;
+    background-color: transparent;
+}
+
 /* end management */
 
 /* File */
@@ -404,8 +416,8 @@ audio {
     }
 
     .management-area {
-        grid-column: 2 / 3;
-        grid-row: 1 / 3;
+        grid-column: 2 / 4;
+        grid-row: 1 / 4;
     }
 
     .audio-display,
