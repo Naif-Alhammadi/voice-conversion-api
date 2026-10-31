@@ -32,6 +32,20 @@ body {
 .navbar-toggler-icon {
     filter: brightness(0) invert(var(--filter));
 }
+
+
+
+
+#mode {
+    right: 50%;
+    background-color: var(--primary);
+    color: var(--text);
+    width: 60px;
+    font-size: 10px;
+    border: solid 1px var(--text);
+    border-radius: 50%;
+}
+
 /* end of navbar styling */
 
 

@@ -110,8 +110,13 @@ body {
     font-size: 15px;
 }
 
-.name-settings {
-    margin-top: 10px;
+#mode {
+    background-color: transparent;
+    background-color: var(--secondary);
+    color: var(--text);
+    border: solid 1px var(--text);
+    padding: 5px;
+    border-radius: 50%;
 }
 
 a {

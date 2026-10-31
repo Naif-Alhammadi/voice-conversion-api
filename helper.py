@@ -340,7 +340,6 @@ def real_imaginary(length, E, O):
     real = list()
     imaginary = list()
     j_indexs = list()
-    print("heloo", length)
 
     # to determine the next even, odd number
     i = 0

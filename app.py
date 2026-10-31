@@ -26,10 +26,11 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+
 @app.route("/")
 def index():
     if session.get("user_id") is not None:
-        return render_template("conversion.html")
+        return redirect("/conversion")
     return render_template("index.html")
 
 
@@ -42,6 +43,70 @@ def mainpage():
 @login_required
 def weather():
     return jsonify({"weatherAPI": os.getenv("WEATHER_API")})
+
+
+@app.route("/preferred-mode", methods=["GET", "POST"])
+def preferred_mode():
+    if request.method == "POST":
+
+        # available modes
+        modes = ["default", "light", "dark"]
+
+        # check if user is logged in
+        if session.get("user_id") is not None:
+
+            # the chosen mode
+            user_preferred_mode = request.get_json("mode")
+            mode = user_preferred_mode["mode"]
+
+            # check if mode is in the available modes list
+            if mode in modes:
+
+                # connect to the data base
+                connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
+                cur = connection.cursor(cursor_factory=RealDictCursor)
+
+                # update the user preferred mode in the database
+                cur.execute("UPDATE users SET preferred_mode = %s WHERE user_id = %s", (mode, str(session["user_id"])))
+            
+                connection.commit()
+                cur.close()
+                connection.close()
+
+                return jsonify({"mode": mode})
+            return jsonify("error")
+
+
+        # if user is not logged in yet and wants to change the preferred mode
+        else:
+            user_preferred_mode = request.get_json("mode")
+            mode = user_preferred_mode["mode"]
+            if mode in modes:
+                return jsonify({"mode": mode})
+            return jsonify("erorr")
+
+
+    elif request.method == "GET":
+
+        # check if user is logged in
+        if session.get("user_id") is not None:
+            
+            # connect to the data base
+            connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
+            cur = connection.cursor(cursor_factory=RealDictCursor)
+        
+            # query for the existing mode
+            cur.execute("SELECT preferred_mode FROM users WHERE user_id = %s", str(session["user_id"]))
+            mode = cur.fetchone()
+        
+        
+            connection.commit()
+            cur.close()
+            connection.close()
+
+            return jsonify({"mode": mode["preferred_mode"]})
+            
+        return jsonify("log in first")            
 
 
 @app.route("/profile-pic", methods=["GET", "POST"])

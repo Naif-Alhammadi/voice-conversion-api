@@ -87,6 +87,5 @@ setInterval(time, 1000);
 
 // responsive nav
 tag.addEventListener("click", function(){
-    console.log("hi")
     nav.classList.toggle("active-res-nav");
 });

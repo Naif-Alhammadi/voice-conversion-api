@@ -20,8 +20,18 @@ body {
     background-size: cover;
 }
 
-label, .form-text{
+label, .form-text {
     color: var(--text);
+}
+
+#mode {
+    margin-top: 10px;
+    background-color: transparent;
+    background-color: var(--secondary);
+    color: var(--text);
+    border: solid 1px var(--text);
+    padding: 5px;
+    border-radius: 50%;
 }
 
 
