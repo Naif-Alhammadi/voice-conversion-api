@@ -90,7 +90,7 @@ def preferred_mode():
 
         # check if user is logged in
         if session.get("user_id") is not None:
-            
+
             # connect to the data base
             connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
             cur = connection.cursor(cursor_factory=RealDictCursor)
@@ -209,6 +209,65 @@ def login():
         })
 
     return render_template("login.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+
+    # if user submit a form
+    if request.method == "POST":
+
+        # take user's data
+        register = request.get_json("email")
+        email = register["email"]
+        password = register["password"]
+
+        # connect to the database
+        connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
+        cur = connection.cursor(cursor_factory=RealDictCursor)
+
+        # query for all emails
+        cur.execute("SELECT * FROM users")
+        users = cur.fetchall()
+
+        # search for every user in users
+        for user in users:
+
+            # if email of a user is found
+            if email in user["user_email"]:
+
+                # query about the hash password of the user
+                cur.execute("SELECT hash_password FROM users WHERE user_email = %s", (email,))
+                hash_password = cur.fetchone()["hash_password"]
+
+                # check if the hash password does match the password
+                if check_password_hash(hash_password, password):
+
+                    # close the connection of the database
+                    connection.close()
+                    cur.close()
+                    session["user_id"] = user["user_id"]
+
+                    return jsonify({"message": "success"})
+
+                # if the hash password does not match the password
+                else:
+
+                    # close the connection of the database
+                    connection.close()
+                    cur.close()
+                    return jsonify({"message": "password is not correct"})
+
+        # if the email does not owned by any of the users
+
+        # close the connection of the database
+        connection.close()
+        cur.close()
+        return jsonify({"message": "eamil not found"})
+
+    # if user search for the register page
+    return render_template("login.html")
+
 
 @app.route("/conversion", methods=["GET", "POST"])
 @login_required

@@ -55,3 +55,32 @@ loginForm.addEventListener("submit", event => {
 });
 });
 
+
+
+const registerForm = document.querySelector("#register-form");
+const registerEmail = document.querySelector("#register-email");
+const registerPassword = document.querySelector("#register-password");
+const registerErrorText = document.querySelector(".register-error-text");
+
+registerForm.addEventListener("submit", e => {
+    e.preventDefault();
+
+    fetch("/register", {
+        method: "POST",
+        headers:
+        {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({"email": registerEmail.value, "password": registerPassword.value})
+    }).then(response => response.json()).then(data => {
+        if(data["message"] === "success")
+        {
+            window.location.href = "/"
+        }
+        else
+        {
+            registerErrorText.innerHTML = data["message"];
+        }
+
+    });
+});

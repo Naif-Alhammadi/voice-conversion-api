@@ -79,6 +79,6 @@ i {
     color: white;
 }
 
-.error-text {
+.error-text, .register-error-text {
     color: red;
 }

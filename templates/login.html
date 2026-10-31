@@ -66,21 +66,24 @@
         </div>
 
         <div class="register">
-            <form action="">
+            <form action="/register" id="register-form" method="post">
 
             <label for="email" class="form-label">Email</label>
-            <input autocomplete="off" id="email" type="text" placeholder="Enter Your Email" name="email" class="form-control" aria-describedby="passwordHelpBlock">
+            <input autocomplete="off" id="register-email" type="text" placeholder="Enter Your Email" name="email" class="form-control" aria-describedby="passwordHelpBlock">
             <div id="passwordHelpBlock" class="form-text">
                     Your email
             </div>
             <br>
                 
             <label for="password" class="form-label">Password</label>
-            <input id="password" type="password" placeholder="Enter Your Password" name="password" class="form-control" aria-describedby="passwordHelpBlock"><label for="password"><i class="fa-regular fa-eye-slash" id="password-icon"></i></label>
+            <input id="register-password" type="password" placeholder="Enter Your Password" name="password" class="form-control" aria-describedby="passwordHelpBlock"><label for="password"><i class="fa-regular fa-eye-slash" id="password-icon"></i></label>
             <div id="passwordHelpBlock" class="form-text">
                     Your password
             </div>
             <br>
+            <div id="passwordHelpBlock" class="form-text register-error-text">
+                    
+            </div>
 
             <button type="submit" class="btn btn-outline-light">Register</button>
             <button type="button" id="donotHave">Don't Have One?</button>
