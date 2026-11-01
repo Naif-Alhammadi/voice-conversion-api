@@ -91,18 +91,18 @@ body {
 }
 
 
- #add-pic-input {
+ .add-pic-input {
     display: none;
 }
 
-#add-pic-lable {
+.add-pic-lable {
     color: var(--text);
     cursor: pointer;
     font-family: sans-serif;
     transition: all 0.3s;
 }
 
-#add-pic-lable:hover {
+.add-pic-lable:hover {
     color: var(--third);
     font-size: 15px;
 }
@@ -157,6 +157,7 @@ i {
     bottom: 95%;
     left: 90%;
     z-index: 1000;
+    color: var(--text);
     display: none;
 }
 
@@ -180,6 +181,13 @@ i {
     background-repeat: no-repeat;
     background-size: cover;
     margin-right: 20px;
+}
+
+
+.add-pic-lable-responsive {
+    position: relative;
+    top: 20%;
+    right: 20%;
 }
 
 .active-res-nav {
