@@ -300,8 +300,6 @@ def process():
     cur = connection.cursor(cursor_factory=RealDictCursor)
 
     
-
-
     file = request.files["file"]
     convert = request.form.get("convertTo")
     value = request.form.get("value")
@@ -334,3 +332,26 @@ def process():
     cur.close()
         
     return jsonify({"process_success": outter_path})
+
+
+@app.route("/history")
+def history():
+
+    # connect to the data base
+    connection = psycopg2.connect(dbname="postgres", user="postgres", host="localhost", password=os.getenv("DATABASE_PASSWORD"), port = "5432")
+    cur = connection.cursor(cursor_factory=RealDictCursor)
+
+    # query for all the transactions
+    cur.execute("SELECT * FROM transactions WHERE user_id = %s", (session["user_id"],))
+    transactions_query = cur.fetchall()
+
+    # fill it with each transaction
+    transactions = list()
+    for transaction in transactions_query:
+        transactions.append(transaction)
+
+    # close the connection
+    connection.close()
+    cur.close()
+
+    return render_template("history.html", transactions=transactions)

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hisroty</title>
+
+    <!-- bootstrap -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="../static/styles/history.css">
+</head>
+<body>
+    <!-- start of navbar -->
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Voice Conversion</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon" aria-hidden="true"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link" href="/mainpage">Home</a>
+                <a class="nav-link" href="/login">Login</a>
+                <a class="nav-link" href="/conversion">Conversion</a>
+                <a class="nav-link" href="https://www.linkedin.com/in/naif-alhammadi-3ab681386?utm_source=share_via&utm_content=profile&utm_medium=member_android">Contact</a>
+                <a id="user-name" class="nav-link">mode</a>
+                <select name="mode" id="mode">
+                    <option value="default" class="options">Default</option>
+                    <option value="light" class="options">Light</option>
+                    <option value="dark" class="options">Dark</option>
+                </select>
+            </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- end of navbar -->
+
+    <!-- records -->
+        <div class="container records">
+        <table class="table">
+            <thead>
+                <th>
+                    Transaction
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    URL
+                </th>
+                <th>
+                    Date
+                </th>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>
+                        {{transaction["transaction_description"]}}
+                    </td>
+                    <td>
+                        {{transaction["transaction_url"]}}
+                    </td>
+                    <td>
+                        <button type="button" class="url-from-transaction">{{transaction["transaction_url"]}}</button>
+                    </td>
+                    <td>
+                        {{transaction["transaction_date"]}}
+                    </td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        </div>
+
+
+    <script src="../static/scripts/lightDark.js"></script>
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

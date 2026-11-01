@@ -1,0 +1,57 @@
+:root {
+    --primary: #DDE3E8;
+    --secondary: #3A0F34;
+    --third: #EAAA00;
+    --text: #FFF;
+    --linerar-1: #dde3e87e;
+    --linerar-2: #3a0f347d;
+    --image: url(../images/light-background.jpg);
+}
+
+
+body {
+    min-height: 100vh;
+    background-image: linear-gradient(var(--linerar-1), var(--linerar-2)), var(--image);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+#mode {
+    right: 50%;
+    background-color: var(--primary);
+    color: var(--text);
+    width: 60px;
+    font-size: 10px;
+    border: solid 1px var(--text);
+    border-radius: 50%;
+}
+
+.records {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+tbody {
+    color: var(--secondary);
+}
+
+
+.url-from-transaction {
+    cursor: pointer;
+    border: transparent;
+    background-color: transparent;
+}
+
+
+
+.nav-link, .navbar-brand {
+    color: var(--text);
+    transition: all 0.3s;
+}
+
+.nav-link:hover, .navbar-brand:hover {
+    color: var(--secondary);
+}

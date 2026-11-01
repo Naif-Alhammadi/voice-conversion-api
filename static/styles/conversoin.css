@@ -265,11 +265,16 @@ tbody {
     color: var(--secondary);
 }
 
+thead {
+    color: var(--secondary);
+}
+
 
 .url-from-transaction {
     cursor: pointer;
     border: transparent;
     background-color: transparent;
+    color: var(--secondary);
 }
 
 /* end management */
