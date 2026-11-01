@@ -235,8 +235,7 @@ def register():
         for user in users:
 
             # if email of a user is found
-            if email in user["user_email"]:
-
+            if email == user["user_email"]:
                 # query about the hash password of the user
                 cur.execute("SELECT hash_password FROM users WHERE user_email = %s", (email,))
                 hash_password = cur.fetchone()["hash_password"]
@@ -264,7 +263,7 @@ def register():
         # close the connection of the database
         connection.close()
         cur.close()
-        return jsonify({"message": "eamil not found"})
+        return jsonify({"message": "email not found"})
 
     # if user search for the register page
     return render_template("login.html")
