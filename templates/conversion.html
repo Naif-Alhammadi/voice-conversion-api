@@ -14,7 +14,7 @@
    <i class="fa-solid fa-bars" id="nav-toggle"></i>
     <div class="responsive-nav active-res-nav">
         
-        <div class="profile-container-res">
+        <div class="profile profile-container-res">
         </div>
         <ul>
             <h1 id="nav-heading">{{user_name}}</h1>
@@ -28,7 +28,17 @@
             </a><a class="list-link" href="/mainpage">
                 <li class="list-item-res"><i class="list-icon">&</i> mainpage</li>
             </a>
+            
+            <div class="mode-div">
+                
+                <p class="mode-p">mode</p>
+                <select name="mode" class="mode">
+                    <option value="default">Default</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
         </ul>
+        </div>
 
     </div>
 
@@ -60,8 +70,8 @@
         
         <div class="mode-div">
             
-            <p id="mode-p">mode</p>
-            <select name="mode" id="mode">
+            <p class="mode-p">mode</p>
+            <select name="mode" class="mode">
                 <option value="default">Default</option>
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
@@ -211,6 +221,7 @@
 
     <script src="../static/scripts/lightDark.js"></script>
      <script src="../static/scripts/blob.js"></script>
+
 
     <!-- fontawesome -->
     <script src="https://kit.fontawesome.com/ef84b809a9.js" crossorigin="anonymous"></script>

@@ -22,7 +22,12 @@
 
 
 // the mode that being selected
-let mode = document.querySelector("#mode");
+let modes = document.querySelectorAll(".mode");
+
+
+
+modes.forEach(mode => {
+    
 
 
 // query if user is already changed the default preferred mode
@@ -163,4 +168,5 @@ mode.addEventListener("change", function(){
             }
         }
     });
+});
 });

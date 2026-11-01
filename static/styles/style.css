@@ -247,3 +247,9 @@ footer {
     
 }
 
+
+@media(max-width: 637px) {
+    .img {
+    display: none;
+    }
+}

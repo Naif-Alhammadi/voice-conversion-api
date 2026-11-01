@@ -1,7 +1,9 @@
 'use strict'
 
-const profile = document.querySelector(".profile");
+const profiles = document.querySelectorAll(".profile");
 const addPicture = document.querySelector("#add-pic-input");
+
+profiles.forEach(profile => {
 
 
 // if user is already added a profile picture
@@ -35,4 +37,5 @@ addPicture.addEventListener("change", function()
             profile.style.backgroundImage = `url("../${data["path"]}")`
         });
     }
+});
 });

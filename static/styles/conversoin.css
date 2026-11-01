@@ -25,11 +25,8 @@ p {
 }
 
 body {
-    background-image: url("./images/abstract-silver-curve-background-metallic-design-style-vector.jpg");
     height: 100%;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-color: var(--primary);
 }
 
 .grid-container {
@@ -110,7 +107,7 @@ body {
     font-size: 15px;
 }
 
-#mode {
+.mode {
     background-color: transparent;
     background-color: var(--secondary);
     color: var(--text);
@@ -142,19 +139,23 @@ i {
 
 .responsive-nav {
     display: flex;
-    position: absolute;
+    position: fixed;
+    bottom: 50%;
     z-index: 999;
-    width: 35vw;
+    width: 100vw;
+    height: 50vh;
     border-radius: var(--static-px);
     transform: translate(0px, 20px);
     transition: all var(--trans-duration);
-    background-color: var(--primary);
-    backdrop-filter: blur(10px);
+    background-color: rgba(235, 235, 235, 0.493);
+    backdrop-filter: blur(100px);
 
 }
 
 #nav-toggle {
-    position: absolute;
+    position: fixed;
+    bottom: 95%;
+    left: 90%;
     z-index: 1000;
     display: none;
 }
@@ -178,13 +179,12 @@ i {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url("../images/dark-background.jpg");
     margin-right: 20px;
 }
 
 .active-res-nav {
     display: none;
-    transform: translate(-260px, 20px);
+    transform: translate(-720px, 20px);
     transition: all var(--trans-duration);
 
 }
@@ -249,6 +249,13 @@ i {
     border: solid 2px transparent;
     transition: all 0.3s;
 }
+
+
+.records {
+    width: 100%;
+    overflow-x: auto;
+}
+
 
 audio {
     width: 180px;
@@ -450,6 +457,7 @@ button[type="button"] {
     .grid-container {
         grid-template-columns: repeat(1, 1fr);
         grid-template-rows: repeat(1, 1fr);
+        height: 100vh;
     }
 
     .nav-container {
@@ -460,6 +468,7 @@ button[type="button"] {
         grid-column: auto;
         grid-row: auto;
         margin-bottom: 20px;
+        display: none;
     }
 
     .audio-display,
@@ -470,6 +479,7 @@ button[type="button"] {
 
     .audio-display {
         grid-column: auto;
+        display: none;
     }
 
     .drag-drop-container,
