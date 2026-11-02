@@ -6,6 +6,9 @@ const iconPassword = document.querySelector("#password-icon");
 const verifyPassword = document.querySelector("#verifypassword");
 const verifyIconPassword = document.querySelector("#verifypassword-icon");
 
+const viewRegisterPassword = document.querySelector("#register-password");
+const iconPasswordRegister = document.querySelector("#password-icon-register");
+
 
 // return the type of the input
 const passwordType = function(type)
@@ -42,14 +45,21 @@ const checkEye = function(icon)
 iconPassword.addEventListener("click", function(){
     viewPassword.type = passwordType(viewPassword.type);
 
-
-        checkEye(iconPassword);
+    checkEye(iconPassword);
 });
 
 
 // inspact verify password
 verifyIconPassword.addEventListener("click", function(){
-        verifyPassword.type = passwordType(verifyPassword.type);
+    verifyPassword.type = passwordType(verifyPassword.type);
 
-        checkEye(verifyIconPassword);
+    checkEye(verifyIconPassword);
+});
+
+
+// inspact register password
+iconPasswordRegister.addEventListener("click", function(){
+    viewRegisterPassword.type = passwordType(viewRegisterPassword.type);
+
+    checkEye(iconPasswordRegister);
 });
