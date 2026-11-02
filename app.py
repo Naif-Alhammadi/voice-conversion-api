@@ -64,7 +64,7 @@ def preferred_mode():
             if mode in modes:
 
                 # connect to the data base
-                connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
+                connection = psycopg2.connect(os.getenv("DATABASE_URL"))
                 cur = connection.cursor(cursor_factory=RealDictCursor)
 
                 # update the user preferred mode in the database
@@ -93,7 +93,7 @@ def preferred_mode():
         if session.get("user_id") is not None:
 
             # connect to the data base
-            connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
+            connection = psycopg2.connect(os.getenv("DATABASE_URL"))
             cur = connection.cursor(cursor_factory=RealDictCursor)
         
             # query for the existing mode
@@ -116,7 +116,7 @@ def profile_pic():
     if request.method == "POST":
 
         # connect to the data base
-        connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
+        connection = psycopg2.connect(os.getenv("DATABASE_URL"))
         cur = connection.cursor(cursor_factory=RealDictCursor)
 
         # take the file from http body
@@ -147,7 +147,7 @@ def profile_pic():
     elif request.method == "GET":
 
         # connect to the data base
-        connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
+        connection = psycopg2.connect(os.getenv("DATABASE_URL"))
         cur = connection.cursor(cursor_factory=RealDictCursor)
 
         # query if the user has an existence image path
@@ -166,7 +166,7 @@ def profile_pic():
 @app.route("/login", methods=["GET" , "POST"])
 def login():
     if request.method == "POST":
-        connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
+        connection = psycopg2.connect(os.getenv("DATABASE_URL"))
 
         cur = connection.cursor(cursor_factory=RealDictCursor)
 
@@ -224,7 +224,7 @@ def register():
         password = register["password"]
 
         # connect to the database
-        connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
+        connection = psycopg2.connect(os.getenv("DATABASE_URL"))
         cur = connection.cursor(cursor_factory=RealDictCursor)
 
         # query for all emails
@@ -272,7 +272,7 @@ def register():
 @app.route("/conversion", methods=["GET", "POST"])
 @login_required
 def homepage():
-    connection = psycopg2.connect(dbname="postgres", user="postgres", host="localhost", password=os.getenv("DATABASE_PASSWORD"), port = "5432")
+    connection = psycopg2.connect(os.getenv("DATABASE_URL"))
     cur = connection.cursor(cursor_factory=RealDictCursor)
 
     cur.execute("SELECT user_name FROM users WHERE user_id = %s", str(session["user_id"]))
@@ -295,7 +295,7 @@ def homepage():
 @app.route("/process", methods=["GET", "POST"])
 @login_required
 def process():
-    connection = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=os.getenv("DATABASE_PASSWORD"), port="5432")
+    connection = psycopg2.connect(os.getenv("DATABASE_URL"))
     cur = connection.cursor(cursor_factory=RealDictCursor)
 
     
@@ -337,7 +337,7 @@ def process():
 def history():
 
     # connect to the data base
-    connection = psycopg2.connect(dbname="postgres", user="postgres", host="localhost", password=os.getenv("DATABASE_PASSWORD"), port = "5432")
+    connection = psycopg2.connect(os.getenv("DATABASE_URL"))
     cur = connection.cursor(cursor_factory=RealDictCursor)
 
     # query for all the transactions
