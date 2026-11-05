@@ -100,7 +100,7 @@ def preferred_mode():
             cur = connection.cursor(cursor_factory=RealDictCursor)
         
             # query for the existing mode
-            cur.execute("SELECT preferred_mode FROM users WHERE user_id = %s", str(session["user_id"]))
+            cur.execute("SELECT preferred_mode FROM users WHERE user_id = %s", (session["user_id"],))
             mode = cur.fetchone()
         
         
@@ -154,7 +154,8 @@ def profile_pic():
         cur = connection.cursor(cursor_factory=RealDictCursor)
 
         # query if the user has an existence image path
-        cur.execute("SELECT user_profile_picture FROM users WHERE user_id = %s", str(session["user_id"]))
+        cur.execute("SELECT user_profile_picture FROM users WHERE user_id = %s", (session["user_id"],))
+
 
         pic_url = cur.fetchone()
 
@@ -278,7 +279,7 @@ def homepage():
     connection = psycopg2.connect(os.getenv("DATABASE_URL"))
     cur = connection.cursor(cursor_factory=RealDictCursor)
 
-    cur.execute("SELECT user_name FROM users WHERE user_id = %s", str(session["user_id"]))
+    cur.execute("SELECT user_name FROM users WHERE user_id = %s", (session["user_id"],))
     user_name = cur.fetchone()
 
 
