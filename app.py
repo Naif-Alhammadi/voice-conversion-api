@@ -283,7 +283,7 @@ def homepage():
     user_name = cur.fetchone()
 
 
-    cur.execute("SELECT * FROM transactions WHERE user_id = %s", (session["user_id"],))
+    cur.execute("SELECT * FROM transactions WHERE user_id = %s LIMIT 5", (session["user_id"],))
     transactions_query = cur.fetchall()
     transactions = list()
     for transaction in transactions_query:
@@ -325,7 +325,7 @@ def process():
     elif convert == "slow_down":
         slow_down(int(value), path, outter_path)
 
-    elif convert == "rotter_pbot":
+    elif convert == "robot":
         robot(path, outter_path)
 
     cur.execute("INSERT INTO transactions(transaction_url, transaction_description, transaction_date, user_id) VALUES(%s, %s, %s, %s)", (f"edited_{convert}_{value}.wav", convert, datetime.now(), str(session["user_id"])))
